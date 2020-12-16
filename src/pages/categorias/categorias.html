@@ -9,6 +9,21 @@
   </ion-navbar>
 </ion-header>
 
+
 <ion-content padding>
-  <p>Página de Categorias</p>
+
+  <ion-list>
+
+    <button ion-item *ngFor="let item of items">
+
+      <ion-thumbnail item-start>
+        <!-- Não tenho conta na Amazon S3! O correto seria colocar o src como: 
+        {{ bucketBaseUrl}}/cat{{item.id}}.jpg -->
+        <img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y">
+      </ion-thumbnail>
+      <h2> {{ item.nome }} </h2>
+
+    </button>
+  </ion-list>
+
 </ion-content>
