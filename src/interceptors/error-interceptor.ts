@@ -2,11 +2,12 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs/Rx";
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { StorageService } from "../services/storage.Service";
+import { AlertController } from "ionic-angular";
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
 
-    constructor(public storage: StorageService) { }
+    constructor(public storage: StorageService, public alertControler: AlertController) { }
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
@@ -27,8 +28,16 @@ export class ErrorInterceptor implements HttpInterceptor {
 
             switch (errorObj.status) {
 
+                case 403:
+                    this.handle403Autenticacao();
+                    break;
+
                 case 403: //Tratando o erro 403
                     this.handle403();
+                    break;
+
+                default:
+                    this.handleDefaultErrors(errorObj);
                     break;
 
 
@@ -41,6 +50,36 @@ export class ErrorInterceptor implements HttpInterceptor {
     handle403() {
 
         this.storage.setLocalUser(null);
+    }
+
+    handle403Autenticacao() {
+
+        let alert = this.alertControler.create({
+            title: 'Erro 401: Falha de autenticação',
+            message: 'Email ou senha incorretos.',
+            enableBackdropDismiss: false,
+            buttons: [
+                {
+                    text: 'Ok'
+                }
+            ]
+        });
+        alert.present();
+    }
+
+    handleDefaultErrors(errorObj) {
+
+        let alert = this.alertControler.create({
+            title: 'Erro ' + errorObj.status + ': ' + errorObj.error,
+            message: errorObj.message,
+            enableBackdropDismiss: false,
+            buttons: [
+                {
+                    text: 'Ok'
+                }
+            ]
+        });
+        alert.present();
     }
 }
 
