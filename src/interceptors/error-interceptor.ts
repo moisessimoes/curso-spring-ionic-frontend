@@ -28,18 +28,17 @@ export class ErrorInterceptor implements HttpInterceptor {
 
             switch (errorObj.status) {
 
-                case 403:
-                    this.handle403Autenticacao();
-                    break;
-
                 case 403: //Tratando o erro 403
                     this.handle403();
+                    break;
+
+                case 401:
+                    this.handle401();
                     break;
 
                 default:
                     this.handleDefaultErrors(errorObj);
                     break;
-
 
             }
 
@@ -50,9 +49,10 @@ export class ErrorInterceptor implements HttpInterceptor {
     handle403() {
 
         this.storage.setLocalUser(null);
+
     }
 
-    handle403Autenticacao() {
+    handle401() {
 
         let alert = this.alertControler.create({
             title: 'Erro 401: Falha de autenticação',

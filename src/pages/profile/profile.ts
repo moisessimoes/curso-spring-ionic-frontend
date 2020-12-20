@@ -28,7 +28,7 @@ export class ProfilePage {
 
         this.cliente = response;
         //buscar imagem
-        this.getImageIfExists();
+        //this.getImageIfExists();
       },
         error => {
 
