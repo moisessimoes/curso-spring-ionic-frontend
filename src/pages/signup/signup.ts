@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AlertController } from 'ionic-angular';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { CidadeDTO } from '../../models/cidade.dto';
 import { EstadoDTO } from '../../models/estado.dto';
 import { CidadeService } from '../../services/domain/cidade.service';
+import { ClienteService } from '../../services/domain/cliente.service';
 import { EstadoService } from '../../services/domain/estado.service';
 
 @IonicPage()
@@ -18,11 +20,12 @@ export class SignupPage {
   cidades: CidadeDTO[];
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public formBuilder: FormBuilder,
-    public cidadeService: CidadeService, public estadoService: EstadoService) {
+    public cidadeService: CidadeService, public estadoService: EstadoService, public clienteService: ClienteService,
+    public alertController: AlertController) {
 
     this.formGroup = this.formBuilder.group({
       //Os campos vão preenchidos apenas pra aagilizar os testes, mas numa aplicação real, esses campos devem estar vazios.
-      nome: ['Pedro', [Validators.required, Validators.minLength(5), Validators.maxLength(120)]],
+      nome: ['Pedro App', [Validators.required, Validators.minLength(5), Validators.maxLength(120)]],
       email: ['pedro@gmail.com', [Validators.required, Validators.email]],
       tipo: ['1', [Validators.required]],
       cpfOuCnpj: ['73198803004', [Validators.required, Validators.minLength(11), Validators.maxLength(14)]],
@@ -64,6 +67,28 @@ export class SignupPage {
 
   signupUser() {
 
-    console.log('Enviou o form com sucesso.');
+    this.clienteService.insert(this.formGroup.value).subscribe(response => {
+
+      this.showInsertOk();
+    },
+      error => { });
+  }
+
+  showInsertOk() {
+
+    let alert = this.alertController.create({
+      title: 'Sucesso!',
+      message: 'Cadastro efetuado com sucesso.',
+      enableBackdropDismiss: false,
+      buttons: [
+        {
+          text: 'Ok',
+          handler: () => {
+            this.navCtrl.pop();
+          }
+        }
+      ]
+    });
+    alert.present();
   }
 }
