@@ -14,7 +14,7 @@
 
   <ion-list>
 
-    <button ion-item *ngFor="let item of items" (click)="showProdutos()">
+    <button ion-item *ngFor="let item of items" (click)="showProdutos(item.id)">
 
       <ion-thumbnail item-start>
         <!-- Não tenho conta na Amazon S3! O correto seria colocar o src como: 
