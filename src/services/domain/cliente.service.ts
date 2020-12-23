@@ -12,10 +12,21 @@ export class ClienteService {
 
     constructor(public http: HttpClient, public storage: StorageService) { }
 
-
+    /*O metodo abaixo vai ser refatorado, do jeito que ele esta agora:
+    
     findByEmail(email: string): Observable<ClienteDTO> {
 
         return this.http.get<ClienteDTO>(`${API_CONFIG.baseUrl}/clientes/email?value=${email}`);
+    }
+
+    Ele esta tipado, agora ele vai ficar como esta mostrando abaixo, sem tipagem, ou seja,
+    agora será retornado todos os dados do cliente, inclusive seus endereços.
+    
+    */
+
+    findByEmail(email: string) {
+
+        return this.http.get(`${API_CONFIG.baseUrl}/clientes/email?value=${email}`);
     }
 
     //Esse codigo abaixo serve para fazer uma requisição GET para buscar a imagem do cliente lá no bucket da Amazon S3
