@@ -29,6 +29,12 @@ export class ClienteService {
         return this.http.get(`${API_CONFIG.baseUrl}/clientes/email?value=${email}`);
     }
 
+
+    findById(id: string) {
+
+        return this.http.get(`${API_CONFIG.baseUrl}/clientes/${id}`);
+    }
+
     //Esse codigo abaixo serve para fazer uma requisição GET para buscar a imagem do cliente lá no bucket da Amazon S3
     //Eu não fiz uma conta na amazon S3, mas serve de conhecimento caso precise algum dia.
 
