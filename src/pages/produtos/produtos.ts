@@ -12,7 +12,8 @@ import { ProdutoService } from '../../services/domain/produto.service';
 })
 export class ProdutosPage {
 
-  items: ProdutoDTO[];
+  items: ProdutoDTO[] = [];
+  page: number = 0;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public produtoService: ProdutoService,
     public loadingControl: LoadingController) {
@@ -28,11 +29,15 @@ export class ProdutosPage {
 
     let categoria_id = this.navParams.get('categoriaId');
     let loader = this.presentLoading();
-    this.produtoService.findByCategoria(categoria_id).subscribe(response => {
+    this.produtoService.findByCategoria(categoria_id, this.page, 10).subscribe(response => {
 
-      this.items = response['content'];
+      //let start = this.items.length; //para controlar o carregamento das imagens dos produtos, para n repetir.
+      this.items = this.items.concat(response['content']);
+      //let end = this.items.length - 1; ////para controlar o carregamento das imagens dos produtos, para n repetir.
       loader.dismiss();
-      //this.loadImgsUrls();
+      console.log(this.page);
+      console.log(this.items);
+      //this.loadImgsUrls(start, end);
     },
       error => { loader.dismiss(); });
   }
@@ -41,9 +46,9 @@ export class ProdutosPage {
   //O metodo abaixo serve para carregar as imagens do produtos no bucket da Amazon S3. Não tenho conta lá, mas serve de
   //conhecimento.
 
-  loadImgsUrls() {
+  loadImgsUrls(start: number, end: number) {
 
-    for (var i = 0; i < this.items.length; i++) {
+    for (var i = start; i <= end; i++) {
       let item = this.items[i];
       this.produtoService.getSmallImageFromBucket(item.id).subscribe(response => {
         item.imageUrl = `${API_CONFIG.bucketBaseUrl}/prod${item.id}-small.jpg`;
@@ -71,9 +76,21 @@ export class ProdutosPage {
 
 
   doRefresh(refresher) {
+    this.page = 0;
+    this.items = [];
     this.loadData();
     setTimeout(() => {
       refresher.complete();
+    }, 1000);
+  }
+
+
+  doInfinite(infiniteScroll) {
+
+    this.page++;
+    this.loadData();
+    setTimeout(() => {
+      infiniteScroll.complete();
     }, 1000);
   }
 }
